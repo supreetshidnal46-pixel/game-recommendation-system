@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #101522;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 30px 16px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        h1 { color: #8b9cff; }
+
+        form, .game {
+            background: #1d2638;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        label { display: block; margin-top: 14px; }
+
+        select, input, button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px;
+            margin-top: 7px;
+            border-radius: 7px;
+        }
+
+        button {
+            margin-top: 20px;
+            background: #687cff;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game h3 { margin-top: 0; color: #aab6ff; }
+        .error { color: #ff9090; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🎮 Game Recommendation System</h1>
+    <p>Find games that match your interests.</p>
+
+    <form method="POST">
+        <label>Choose Genre</label>
+        <select name="genre">
+            {% for item in [
+                'All', 'Action', 'Adventure', 'Sandbox',
+                'Sports', 'Racing', 'Simulation', 'RPG'
+            ] %}
+            <option value="{{ item }}"
+                {% if genre == item %}selected{% endif %}>
+                {{ item }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>Choose Platform</label>
+        <select name="platform">
+            {% for item in [
+                'All', 'PC', 'PlayStation', 'Xbox', 'Nintendo'
+            ] %}
+            <option value="{{ item }}"
+                {% if platform == item %}selected{% endif %}>
+                {{ item }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>Minimum Rating (0–10)</label>
+        <input type="number" name="min_rating"
+               min="0" max="10" step="0.1"
+               value="{{ min_rating }}" required>
+
+        <button type="submit">Find Recommended Games</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% elif searched and games %}
+        <h2>Recommended Games</h2>
+        {% for game in games %}
+        <div class="game">
+            <h3>{{ game.name }}</h3>
+            <p>Genre: {{ game.genre }}</p>
+            <p>Platform: {{ game.platform }}</p>
+            <p>Rating: ⭐ {{ game.rating }}/10</p>
+        </div>
+        {% endfor %}
+    {% elif searched %}
+        <p>No games match your selected preferences.</p>
+    {% endif %}
+</div>
+</body>
+</html>
